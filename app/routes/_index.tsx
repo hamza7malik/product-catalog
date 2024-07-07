@@ -1,9 +1,10 @@
 import type { MetaFunction } from '@remix-run/node';
+import ProductList from '~/components/ProductList.tsx/ProductList';
 
 export default function Index() {
   return (
-    <div className='font-sans p-4'>
-      <h1 className='w-full text-center'>Hello World!</h1>
+    <div className=''>
+      <ProductList />
     </div>
   );
 }
