@@ -5,9 +5,6 @@ const CreateProduct = () => {
   const handleCreateUsingCLI = () => {
     console.log('handleCreateUsingCLI');
   };
-  const handleCreateNewCategory = () => {
-    console.log('handleCreateNewCategory');
-  };
 
   return (
     <div>
