@@ -1,5 +1,8 @@
-import type { MetaFunction } from '@remix-run/node';
+import { json, type LoaderFunction, type MetaFunction } from '@remix-run/node';
+import { useLoaderData } from '@remix-run/react';
 import ProductList from '~/components/ProductList.tsx/ProductList';
+import { Category, Product } from '~/types/types';
+import { prisma } from '~/utils/database.server';
 
 export const meta: MetaFunction = () => {
   return [
@@ -8,69 +11,31 @@ export const meta: MetaFunction = () => {
   ];
 };
 
+export const loader: LoaderFunction = async () => {
+  const products = await prisma.product.findMany({
+    include: {
+      categories: {
+        include: {
+          category: true,
+        },
+      },
+    },
+  });
+
+  const categories = await prisma.category.findMany();
+
+  return json({ products, categories });
+};
+
 export default function Index() {
-  const products = [
-    {
-      _id: '1',
-      name: 'Test Product 1',
-      categories: [{ _id: '1', name: 'clothing', parentCategory: null }],
-      description: 'this is test product',
-      price: 12,
-      image: '/images/products/1.webp',
-    },
-    {
-      _id: '2',
-      name: 'Test Product 2',
-      categories: [{ _id: '2', name: 'clothing', parentCategory: null }],
-      description: 'this is test product',
-      price: 12,
-      image: '/images/products/1.webp',
-    },
-    {
-      _id: '3',
-      name: 'Test Product 3',
-      categories: [{ _id: '3', name: 'clothing', parentCategory: null }],
-      description: 'this is test product',
-      price: 12,
-      image: '/images/products/1.webp',
-    },
-    {
-      _id: '4',
-      name: 'Test Product 3',
-      categories: [{ _id: '4', name: 'clothing', parentCategory: null }],
-      description: 'this is test product',
-      price: 12,
-      image: '/images/products/1.webp',
-    },
-    {
-      _id: '5',
-      name: 'Test Product 3',
-      categories: [{ _id: '5', name: 'clothing', parentCategory: null }],
-      description: 'this is test product',
-      price: 12,
-      image: '/images/products/1.webp',
-    },
-    {
-      _id: '6',
-      name: 'Test Product 3',
-      categories: [{ _id: '6', name: 'clothing', parentCategory: null }],
-      description: 'this is test product',
-      price: 12,
-      image: '/images/products/1.webp',
-    },
-    {
-      _id: '7',
-      name: 'Test Product 3',
-      categories: [{ _id: '7', name: 'clothing', parentCategory: null }],
-      description: 'this is test product',
-      price: 12,
-      image: '/images/products/1.webp',
-    },
-  ];
+  const { products, categories } = useLoaderData<{
+    products: Product[];
+    categories: Category[];
+  }>();
 
   return (
     <div className=''>
-      <ProductList products={products} />
+      <ProductList products={products} categories={categories} />
     </div>
   );
 }

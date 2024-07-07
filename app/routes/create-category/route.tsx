@@ -1,7 +1,27 @@
-import { Form, Link } from '@remix-run/react';
+import { ActionFunction } from '@remix-run/node';
+import { Form, Link, json, redirect, useLoaderData } from '@remix-run/react';
 import React from 'react';
+import { Category } from '~/types/types';
+import { addCategory } from '~/utils/categories.server';
+import { prisma } from '~/utils/database.server';
+
+export const action: ActionFunction = async ({ request }) => {
+  const formData = await request.formData();
+  const name = formData.get('name') as string;
+  const parentCategory = formData.get('categories') as string | null;
+
+  await addCategory({ name, parentCategory });
+
+  return redirect('/');
+};
+
+export const loader = async () => {
+  const categories = await prisma.category.findMany();
+  return json(categories);
+};
 
 const CreateCategory = () => {
+  const categories = useLoaderData<Category[]>();
   return (
     <div>
       <h1 className='my-8 font-bold'>Create Category</h1>
@@ -27,9 +47,12 @@ const CreateCategory = () => {
                 id='categories'
                 className='w-full bg-slate-600  font-semibold'
               >
-                <option value='category1'>category 1</option>
-                <option value='category2'>category 2</option>
-                <option value='category3'>category 3</option>
+                <option value=''>Select parent category</option>
+                {categories.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.name}
+                  </option>
+                ))}
               </select>
             </div>
           </div>

@@ -17,9 +17,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
           style={{ backgroundImage: `url("${image}")` }}
         ></div>
         <div className='py-2'>
-          <p className='text-slate-500 text-s'>
-            category: {categories.map((category, index) => category.name)}
-          </p>
+          <p className='text-slate-500 text-s'>category: </p>
           <div className='py-2'>
             <div className='flex items-center justify-between font-semibold'>
               <h2>{name}</h2>
