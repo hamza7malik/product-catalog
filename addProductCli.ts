@@ -1,5 +1,5 @@
 import { program } from 'commander';
-import { addProduct } from './app/utils/products.server';
+import { addProduct } from './app/repositories/products.server';
 
 program
   .command('add-product')

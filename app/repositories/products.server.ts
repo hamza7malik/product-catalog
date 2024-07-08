@@ -20,3 +20,20 @@ export async function addProduct(productData: Product) {
     return createdProduct;
   } catch (error) {}
 }
+export async function getAllProducts() {
+  try {
+    const products = await prisma.product.findMany({
+      include: {
+        categories: {
+          include: {
+            category: true,
+          },
+        },
+      },
+    });
+
+    return products;
+  } catch (error) {}
+}
+
+// -------

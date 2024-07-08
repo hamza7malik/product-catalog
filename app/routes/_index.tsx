@@ -1,31 +1,9 @@
 import { json, type LoaderFunction, type MetaFunction } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
-import ProductList from '~/components/ProductList.tsx/ProductList';
 import { Category, Product } from '~/types/types';
-import { prisma } from '~/utils/database.server';
-
-export const meta: MetaFunction = () => {
-  return [
-    { title: 'Product Catalog' },
-    { name: 'description', content: 'Welcome to the Product Catalog' },
-  ];
-};
-
-export const loader: LoaderFunction = async () => {
-  const products = await prisma.product.findMany({
-    include: {
-      categories: {
-        include: {
-          category: true,
-        },
-      },
-    },
-  });
-
-  const categories = await prisma.category.findMany();
-
-  return json({ products, categories });
-};
+import { getAllCategories } from '~/repositories/categories.server';
+import { getAllProducts } from '~/repositories/products.server';
+import ProductList from '~/components/ProductList.tsx/ProductList';
 
 export default function Index() {
   const { products, categories } = useLoaderData<{
@@ -39,3 +17,17 @@ export default function Index() {
     </div>
   );
 }
+
+export const meta: MetaFunction = () => {
+  return [
+    { title: 'Product Catalog' },
+    { name: 'description', content: 'Welcome to the Product Catalog' },
+  ];
+};
+
+export const loader: LoaderFunction = async () => {
+  const products = await getAllProducts();
+  const categories = await getAllCategories();
+
+  return json({ products, categories });
+};

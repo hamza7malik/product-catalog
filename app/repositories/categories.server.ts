@@ -1,4 +1,3 @@
-import { Category, Product } from '~/types/types';
 import { prisma } from './database.server';
 
 export async function getAllCategories() {

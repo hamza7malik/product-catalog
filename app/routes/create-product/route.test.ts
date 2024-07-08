@@ -1,7 +1,7 @@
 import { action } from './route';
 import { redirect } from '@remix-run/node';
 import { uploadImage } from '../../utils/cloudinary.server';
-import { addProduct } from '../../utils/products.server';
+import { addProduct } from '../../repositories/products.server';
 
 jest.mock('../../utils/cloudinary.server');
 jest.mock('../../utils/products.server');
