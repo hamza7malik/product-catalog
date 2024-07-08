@@ -71,8 +71,11 @@ export const action: ActionFunction = async ({ request }) => {
 const CreateProduct = () => {
   const { categories } = useLoaderData<{ categories: Category[] }>();
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [isCliMessage, setIsCliMessage] = useState(false);
 
-  const handleCreateUsingCLI = () => {};
+  const handleCreateUsingCLI = () => {
+    setIsCliMessage(!isCliMessage);
+  };
 
   const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedOptions = Array.from(
@@ -174,6 +177,19 @@ const CreateProduct = () => {
           >
             {isSubmitting ? 'Loading...' : 'Create'}
           </button>
+          <div
+            className={`bg-gray-950 px-24 py-12 mx-auto lg:w-[90%] rounded-lg mt-4 ${
+              isCliMessage ? 'block' : 'hidden'
+            }`}
+          >
+            To add a product, navigate to the project folder and run the
+            following command:
+            <p className='text-orange-300 mt-3'>
+              {
+                '<node --loader ts-node/esm ./productAddCli.ts add-product --name "Your Product Name" --description "Product Description" --price 99.99 --image "https://uploaded/image/url.webp" --categories "category_id_1,category_id_2">'
+              }
+            </p>
+          </div>
         </div>
       </Form>
       <button onClick={handleCreateUsingCLI} className='text-slate-700 mt-2'>

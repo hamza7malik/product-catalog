@@ -20,8 +20,8 @@ const ProductCard = ({ product }: ProductCardProps) => {
           <p className='text-slate-500 text-s'>
             category:{' '}
             {product.categories.map((category) => (
-              <li key={category.id}>{category.category.name}</li>
-            ))}{' '}
+              <span key={category.id}>{category.category.name}</span>
+            ))}
           </p>
           <div className='py-2'>
             <div className='flex items-center justify-between font-semibold'>
