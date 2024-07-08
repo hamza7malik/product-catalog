@@ -5,13 +5,20 @@ import {
   unstable_createMemoryUploadHandler as createMemoryUploadHandler,
   unstable_parseMultipartFormData as parseMultipartFormData,
 } from '@remix-run/node';
-import { Form, Link, json, redirect, useLoaderData } from '@remix-run/react';
-import React, { useState } from 'react';
-import { Category, Product } from '~/types/types';
-import { uploadImage } from '~/utils/cloudinary.server';
-import { prisma } from '~/utils/database.server';
+import {
+  Form,
+  Link,
+  json,
+  redirect,
+  useLoaderData,
+  useSubmit,
+} from '@remix-run/react';
+import React, { FormEvent, useState } from 'react';
+import { Category, Product, ProductCategory } from '~/types/types';
+import { uploadImage } from '../../utils/cloudinary.server';
+import { prisma } from '../../utils/database.server';
 
-import { addProduct } from '~/utils/products.server';
+import { addProduct } from '../../utils/products.server';
 
 export const loader: LoaderFunction = async () => {
   const categories = await prisma.category.findMany();
@@ -25,16 +32,23 @@ export const action: ActionFunction = async ({ request }) => {
     const description = formData.get('description') as string;
     const price = parseFloat(formData.get('price') as string);
     const imageFile = formData.get('image') as File;
+    const selectedCategoryIds = formData.getAll('categories') as string[];
 
     if (!name || !description || isNaN(price) || !imageFile) {
       throw new Error('Invalid form data');
     }
 
-    // Upload the image to Cloudinary
     let imageUrl = '';
     if (imageFile) {
       imageUrl = await uploadImage(imageFile);
     }
+    // @ts-ignore
+    const categories: ProductCategory[] = selectedCategoryIds.map(
+      (categoryId) => ({
+        productId: '',
+        categoryId,
+      })
+    );
 
     const productData = {
       id: '',
@@ -42,14 +56,14 @@ export const action: ActionFunction = async ({ request }) => {
       description,
       price,
       image: imageUrl,
-      categories: [],
+      categories,
     };
 
     await addProduct(productData);
 
     return redirect('/');
   } catch (error) {
-    console.error('Error processing action:', error);
+    console.log('Error processing action:', error);
     return redirect('/error');
   }
 };
@@ -68,6 +82,14 @@ const CreateProduct = () => {
     setSelectedCategories(selectedOptions);
   };
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const submit = useSubmit();
+
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    setIsSubmitting(true);
+    submit(event.currentTarget, { replace: true });
+  };
+
   return (
     <div>
       <h1 className='my-8 font-bold'>Create Product</h1>
@@ -76,6 +98,7 @@ const CreateProduct = () => {
         method='post'
         id='create-product-form'
         encType='multipart/form-data'
+        onSubmit={handleSubmit}
       >
         <div className='mx-auto lg:w-[50%] text-left p-8 bg-slate-900'>
           <div className='my-4 grid grid-cols-1 sm:grid-cols-2 gap-3 lg:gap-0 justify-between'>
@@ -147,8 +170,9 @@ const CreateProduct = () => {
           <button
             type='submit'
             className='bg-slate-950 py-2 px-8 mx-auto flex justify-center mt-3'
+            disabled={isSubmitting}
           >
-            Create
+            {isSubmitting ? 'Loading...' : 'Create'}
           </button>
         </div>
       </Form>

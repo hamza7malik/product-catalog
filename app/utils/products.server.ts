@@ -10,7 +10,6 @@ export async function addProduct(productData: Product) {
         price: productData.price,
         image: productData.image,
         categories: {
-          // Assuming categories are stored as ProductCategory[]
           create: productData.categories.map((category) => ({
             categoryId: category.categoryId,
           })),
