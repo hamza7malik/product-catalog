@@ -8,10 +8,10 @@ import {
   useSubmit,
 } from '@remix-run/react';
 import { FormEvent, useState } from 'react';
-import { Category, ProductCategory } from '~/types/types';
+import { Category, ProductCategory } from '../../types/types';
 import { uploadImage } from '../../utils/cloudinary.server';
 import { addProduct } from '../../repositories/products.server';
-import { getAllCategories } from '~/repositories/categories.server';
+import { getAllCategories } from '../../repositories/categories.server';
 
 const CreateProduct = () => {
   const { categories } = useLoaderData<{ categories: Category[] }>();

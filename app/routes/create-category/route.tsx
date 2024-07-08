@@ -1,10 +1,10 @@
 import { ActionFunction, MetaFunction } from '@remix-run/node';
 import { Form, json, redirect, useLoaderData } from '@remix-run/react';
-import { Category } from '~/types/types';
+import { Category } from '../../types/types';
 import {
   addCategory,
   getAllCategories,
-} from '~/repositories/categories.server';
+} from '../../repositories/categories.server';
 
 const CreateCategory = () => {
   const categories = useLoaderData<Category[]>();

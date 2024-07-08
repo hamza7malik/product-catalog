@@ -1,9 +1,9 @@
 import { json, type LoaderFunction, type MetaFunction } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
-import { Category, Product } from '~/types/types';
-import { getAllCategories } from '~/repositories/categories.server';
-import { getAllProducts } from '~/repositories/products.server';
-import ProductList from '~/components/ProductList.tsx/ProductList';
+import { Category, Product } from '../types/types';
+import { getAllCategories } from '../repositories/categories.server';
+import { getAllProducts } from '../repositories/products.server';
+import ProductList from '../components/ProductList.tsx/ProductList';
 
 export default function Index() {
   const { products, categories } = useLoaderData<{
