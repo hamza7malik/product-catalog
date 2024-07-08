@@ -5,6 +5,7 @@ import { addProduct } from '../../repositories/products.server';
 
 jest.mock('../../utils/cloudinary.server');
 jest.mock('../../repositories/products.server');
+import { File } from '../../../fileMock';
 
 // Suppress console.log during tests
 jest.spyOn(global.console, 'log').mockImplementation(() => {});
