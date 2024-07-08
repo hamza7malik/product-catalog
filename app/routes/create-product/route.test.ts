@@ -1,11 +1,11 @@
 import { action } from './route';
 import { redirect } from '@remix-run/node';
 import { uploadImage } from '../../utils/cloudinary.server';
-import { addProduct } from '../../utils/products.server';
-import { File } from '../../../fileMock';
+import { addProduct } from '../../repositories/products.server';
 
 jest.mock('../../utils/cloudinary.server');
-jest.mock('../../utils/products.server');
+jest.mock('../../repositories/products.server');
+import { File } from '../../../fileMock';
 
 // Suppress console.log during tests
 jest.spyOn(global.console, 'log').mockImplementation(() => {});

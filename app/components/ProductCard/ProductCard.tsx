@@ -1,7 +1,7 @@
 import { Link } from '@remix-run/react';
 import React from 'react';
-import { Product } from '~/types/types';
-import { limitedText } from '~/utils/helpers';
+import { Product } from '../../types/types';
+import { limitedText } from '../../utils/helpers';
 
 type ProductCardProps = {
   product: Product;

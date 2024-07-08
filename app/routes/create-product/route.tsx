@@ -1,10 +1,4 @@
-import {
-  ActionFunction,
-  LoaderFunction,
-  unstable_composeUploadHandlers as composeUploadHandlers,
-  unstable_createMemoryUploadHandler as createMemoryUploadHandler,
-  unstable_parseMultipartFormData as parseMultipartFormData,
-} from '@remix-run/node';
+import { ActionFunction, LoaderFunction, MetaFunction } from '@remix-run/node';
 import {
   Form,
   Link,
@@ -13,80 +7,21 @@ import {
   useLoaderData,
   useSubmit,
 } from '@remix-run/react';
-import React, { FormEvent, useState } from 'react';
-import { Category, Product, ProductCategory } from '~/types/types';
+import { FormEvent, useState } from 'react';
+import { Category, ProductCategory } from '../../types/types';
 import { uploadImage } from '../../utils/cloudinary.server';
-import { prisma } from '../../utils/database.server';
-
-import { addProduct } from '../../utils/products.server';
-
-export const loader: LoaderFunction = async () => {
-  const categories = await prisma.category.findMany();
-  return json({ categories });
-};
-
-export const action: ActionFunction = async ({ request }) => {
-  try {
-    const formData = await request.formData();
-    const name = formData.get('name') as string;
-    const description = formData.get('description') as string;
-    const price = parseFloat(formData.get('price') as string);
-    const imageFile = formData.get('image') as File;
-    const selectedCategoryIds = formData.getAll('categories') as string[];
-
-    if (!name || !description || isNaN(price) || !imageFile) {
-      throw new Error('Invalid form data');
-    }
-
-    let imageUrl = '';
-    if (imageFile) {
-      imageUrl = await uploadImage(imageFile);
-    }
-    // @ts-ignore
-    const categories: ProductCategory[] = selectedCategoryIds.map(
-      (categoryId) => ({
-        productId: '',
-        categoryId,
-      })
-    );
-
-    const productData = {
-      id: '',
-      name,
-      description,
-      price,
-      image: imageUrl,
-      categories,
-    };
-
-    await addProduct(productData);
-
-    return redirect('/');
-  } catch (error) {
-    console.log('Error processing action:', error);
-    return redirect('/error');
-  }
-};
+import { addProduct } from '../../repositories/products.server';
+import { getAllCategories } from '../../repositories/categories.server';
 
 const CreateProduct = () => {
   const { categories } = useLoaderData<{ categories: Category[] }>();
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [isCliMessage, setIsCliMessage] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const submit = useSubmit();
 
   const handleCreateUsingCLI = () => {
     setIsCliMessage(!isCliMessage);
   };
-
-  const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedOptions = Array.from(
-      e.target.selectedOptions,
-      (option) => option.value
-    );
-    setSelectedCategories(selectedOptions);
-  };
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const submit = useSubmit();
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     setIsSubmitting(true);
@@ -143,7 +78,6 @@ const CreateProduct = () => {
                 id='categories'
                 multiple
                 className='w-full bg-slate-600  font-semibold'
-                onChange={handleCategoryChange}
               >
                 {categories.map((category) => (
                   <option key={category.id} value={category.id}>
@@ -197,6 +131,59 @@ const CreateProduct = () => {
       </button>
     </div>
   );
+};
+export const meta: MetaFunction = () => {
+  return [
+    { title: 'Create Product' },
+    { name: 'description', content: 'Create a product' },
+  ];
+};
+export const loader: LoaderFunction = async () => {
+  const categories = await getAllCategories();
+  return json({ categories });
+};
+
+export const action: ActionFunction = async ({ request }) => {
+  try {
+    const formData = await request.formData();
+    const name = formData.get('name') as string;
+    const description = formData.get('description') as string;
+    const price = parseFloat(formData.get('price') as string);
+    const imageFile = formData.get('image') as File;
+    const selectedCategoryIds = formData.getAll('categories') as string[];
+
+    if (!name || !description || isNaN(price) || !imageFile) {
+      throw new Error('Invalid form data');
+    }
+
+    let imageUrl = '';
+    if (imageFile) {
+      imageUrl = await uploadImage(imageFile);
+    }
+    // @ts-ignore
+    const categories: ProductCategory[] = selectedCategoryIds.map(
+      (categoryId) => ({
+        productId: '',
+        categoryId,
+      })
+    );
+
+    const productData = {
+      id: '',
+      name,
+      description,
+      price,
+      image: imageUrl,
+      categories,
+    };
+
+    await addProduct(productData);
+
+    return redirect('/');
+  } catch (error) {
+    console.log('Error processing action:', error);
+    return redirect('/error');
+  }
 };
 
 export function ErrorBoundary({ error }: { error: Error }) {

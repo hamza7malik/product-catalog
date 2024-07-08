@@ -1,24 +1,10 @@
-import { ActionFunction } from '@remix-run/node';
-import { Form, Link, json, redirect, useLoaderData } from '@remix-run/react';
-import React from 'react';
-import { Category } from '~/types/types';
-import { addCategory } from '~/utils/categories.server';
-import { prisma } from '~/utils/database.server';
-
-export const action: ActionFunction = async ({ request }) => {
-  const formData = await request.formData();
-  const name = formData.get('name') as string;
-  const parentCategory = formData.get('categories') as string | null;
-
-  await addCategory({ name, parentCategory });
-
-  return redirect('/');
-};
-
-export const loader = async () => {
-  const categories = await prisma.category.findMany();
-  return json(categories);
-};
+import { ActionFunction, MetaFunction } from '@remix-run/node';
+import { Form, json, redirect, useLoaderData } from '@remix-run/react';
+import { Category } from '../../types/types';
+import {
+  addCategory,
+  getAllCategories,
+} from '../../repositories/categories.server';
 
 const CreateCategory = () => {
   const categories = useLoaderData<Category[]>();
@@ -67,6 +53,28 @@ const CreateCategory = () => {
       </Form>
     </div>
   );
+};
+
+export const meta: MetaFunction = () => {
+  return [
+    { title: 'Create Category' },
+    { name: 'description', content: 'Create a category' },
+  ];
+};
+
+export const action: ActionFunction = async ({ request }) => {
+  const formData = await request.formData();
+  const name = formData.get('name') as string;
+  const parentCategory = formData.get('categories') as string | null;
+
+  await addCategory({ name, parentCategory });
+
+  return redirect('/');
+};
+
+export const loader = async () => {
+  const categories = await getAllCategories();
+  return json(categories);
 };
 
 export default CreateCategory;
