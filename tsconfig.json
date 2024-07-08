@@ -7,7 +7,8 @@
     "**/.client/**/*.ts",
     "**/.client/**/*.tsx",
     "app/routes/*.test.js",
-    "app/routes/**/route.tsx"
+    "app/routes/**/route.tsx",
+    "./app/**/*.ts"
   ],
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ES2022"],
@@ -28,7 +29,6 @@
       "~/*": ["./app/*"]
     },
 
-    // Vite takes care of building everything, not tsc.
     "noEmit": true
   }
 }
