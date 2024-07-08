@@ -1,40 +1,79 @@
-# Welcome to Remix!
+# Product Catalog
 
-- 📖 [Remix docs](https://remix.run/docs)
+A product catalog application built with **Remix**, **TypeScript**, **Prisma**, and **MongoDB**.
 
-## Development
+## Features
 
-Run the dev server:
+- Create Product
+- Create Category
+- Sort Products by Price
+- Filter Products by Category
+- Create Product from CLI
 
-```shellscript
+## Project Setup
+
+### Prerequisites
+
+- Node.js
+- MongoDB
+- Cloudinary account
+
+### Environment Variables
+
+Create a `.env` file in the root directory and add the following:
+
+```bash
+DATABASE_URL=<your_mongodb_connection_string>
+CLOUD_NAME=<your_cloudinary_cloud_name>
+API_KEY=<your_cloudinary_api_key>
+API_SECRET=<your_cloudinary_api_secret>
+```
+
+### Installation
+
+### Environment Variables
+
+Clone the repository:
+
+```bash
+git clone https://github.com/your-username/product-catalog.git
+cd product-catalog
+```
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Generate Prisma client:
+
+```bash
+npx prisma generate
+```
+
+### Running the Application
+
+```bash
 npm run dev
 ```
 
-## Deployment
+### CLI Usage
 
-First, build your app for production:
+To create a product from the CLI, navigate to the project root directory and run:
 
-```sh
-npm run build
+```bash
+node --loader ts-node/esm ./productAddCli.ts add-product --name "Your Product Name" --description "Product Description" --price 99.99 --image "https://res.cloudinary.com/dcjxxw51h/image/upload/v1720422782/wfu9nf1ayqcuy0cbsub9.webp" --categories "category_id_1,category_id_2"
 ```
 
-Then run the app in production mode:
+### Deployment
 
-```sh
-npm start
-```
+The application is deployed on Vercel. Visit https://product-catalog-psi.vercel.app/
 
-Now you'll need to pick a host to deploy it to.
+### Contributing
 
-### DIY
+Feel free to open issues or submit pull requests.
 
-If you're familiar with deploying Node applications, the built-in Remix app server is production-ready.
+### License
 
-Make sure to deploy the output of `npm run build`
-
-- `build/server`
-- `build/client`
-
-## Styling
-
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever css framework you prefer. See the [Vite docs on css](https://vitejs.dev/guide/features.html#css) for more information.
+This project is licensed under the MIT License.
