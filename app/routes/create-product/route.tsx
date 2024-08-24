@@ -112,7 +112,7 @@ const CreateProduct = () => {
             {isSubmitting ? 'Loading...' : 'Create'}
           </button>
           <div
-            className={`bg-gray-950 px-24 py-12 mx-auto lg:w-[90%] rounded-lg mt-4 ${
+            className={`bg-gray-950 px-4 sm:px-24 py-12 mx-auto lg:w-[90%] rounded-lg mt-4 ${
               isCliMessage ? 'block' : 'hidden'
             }`}
           >
