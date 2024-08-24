@@ -39,13 +39,13 @@ const ProductList = ({ products, categories }: ProductListProps) => {
   return (
     <div>
       <h1 className='my-8 font-bold'>Product List</h1>
-      <div className='flex justify-center items-center gap-24 my-8'>
+      <div className='flex justify-center items-center gap-12 sm:gap-24 my-8'>
         <button onClick={handleSortByPrice}>
           <span className='text-slate-500'>{`sort by price ${
             sortedByPrice ? '👆' : '👇'
           }`}</span>
         </button>
-        <div className='w-[200px]'>
+        <div className=''>
           <select
             className='bg-transparent text-slate-600 font-semibold'
             name='categories'
